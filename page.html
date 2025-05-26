@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solver de Programación Lineal</title>
+    <link rel="stylesheet" href="page.css">
+    <script src="page.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔢 Método Gráfico</h1>
+            <p>Solución de modelos de PL con 2 variables</p>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title">📝 Definición del Problema</h2>
+                
+                <div class="form-group">
+                    <label>Función Objetivo:</label>
+                    <div class="form-row">
+                        <select id="tipoOptimizacion">
+                            <option value="maximizar">Maximizar</option>
+                            <option value="minimizar">Minimizar</option>
+                        </select>
+                        <span>f(x₁,x₂) =</span>
+                        <input type="number" id="c1" step="0.1" value="3" placeholder="c₁">
+                        <span>x₁ +</span>
+                        <input type="number" id="c2" step="0.1" value="2" placeholder="c₂">
+                        <span>x₂</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Restricciones:</label>
+                    <div class="constraint-controls">
+                        <button class="btn btn-success" onclick="agregarRestriccion()">➕ Agregar Restricción</button>
+                        <span id="contador-restricciones">Restricciones: 0/8</span>
+                    </div>
+                    <div id="restricciones-container">
+                        <!-- Las restricciones se agregan dinámicamente aquí -->
+                    </div>
+                </div>
+
+                <button class="btn btn-solve" onclick="resolverProblema()">🚀 Resolver Problema</button>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">📊 Resultados</h2>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Resolviendo problema...</p>
+                </div>
+
+                <div id="resultados" style="display: none;">
+                    <div class="result-item">
+                        <h4>🎯 Solución Óptima (Método Gráfico)</h4>
+                        <p id="solucion-grafico">-</p>
+                    </div>
+
+                    <div class="result-item">
+                        <h4>✅ Verificación Analítica</h4>
+                        <p id="solucion-analitica">-</p>
+                    </div>
+
+                    <div class="result-item">
+                        <h4>📐 Vértices de la Región Factible</h4>
+                        <div id="vertices-lista" class="vertices-list">-</div>
+                    </div>
+
+                    <div class="graph-container">
+                        <img id="grafico" src="" alt="Gráfico de la solución" style="display: none;">
+                    </div>
+                </div>
+
+                <div id="error-mensaje" class="error" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
