@@ -127,15 +127,6 @@ function mostrarResultados(data) {
         document.getElementById('solucion-grafico').innerHTML = 'No se encontró solución factible';
     }
 
-    // Solución analítica
-    if (data.solucion_analitica) {
-        document.getElementById('solucion-analitica').innerHTML = 
-            `x₁ = ${data.solucion_analitica.punto[0].toFixed(3)}, x₂ = ${data.solucion_analitica.punto[1].toFixed(3)}<br>
-            Valor óptimo: f* = ${data.solucion_analitica.valor.toFixed(3)}`;
-    } else {
-        document.getElementById('solucion-analitica').innerHTML = 'No disponible';
-    }
-
     // Vértices
     const verticesContainer = document.getElementById('vertices-lista');
     verticesContainer.innerHTML = '';
