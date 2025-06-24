@@ -11,8 +11,7 @@
     <div class="container">
         <div class="header">
             <h1>📋 Método Tabulado (Simplex)</h1>
-            <p>Solución paso a paso con el método simplex tabular</p>
-            <a href="/grafico" class="btn btn-primary" style="float:right;">Ir a Método Gráfico</a>
+            <a href="/grafico" class="btn btn-primary">Ir a Método Gráfico</a>
         </div>
 
         <div class="main-content">
@@ -21,16 +20,18 @@
                 
                 <div class="form-group">
                     <label>Función Objetivo:</label>
-                    <div class="form-row">
+                    <div class="form-row" id="funcion-objetivo-row">
                         <select id="tipoOptimizacion">
                             <option value="maximizar">Maximizar</option>
                             <option value="minimizar">Minimizar</option>
                         </select>
-                        <span>f(x₁,x₂) =</span>
-                        <input type="number" id="c1" step="0.1" value="3" placeholder="c₁">
-                        <span>x₁ +</span>
-                        <input type="number" id="c2" step="0.1" value="2" placeholder="c₂">
+                        <span>f(x) =</span>
+                        <input type="number" step="0.1" value="3" placeholder="c1" class="coef-c">
+                        <span>x₁</span>
+                        <input type="number" step="0.1" value="2" placeholder="c2" class="coef-c">
                         <span>x₂</span>
+                        <span id="mas-vars"></span>
+                        <button type="button" class="btn btn-success" style="margin-left:10px;" onclick="agregarVariable()">➕ Variable</button>
                     </div>
                 </div>
 

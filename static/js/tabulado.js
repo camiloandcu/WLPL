@@ -1,30 +1,76 @@
+let numVars = 2;
 let contadorRestricciones = 0;
 const maxRestricciones = 8;
+
+function agregarVariable() {
+    if (numVars >= 5) {
+        alert("Máximo 5 variables permitidas");
+        return;
+    }
+    numVars++;
+    // Agregar input a la función objetivo
+    const masVars = document.getElementById('mas-vars');
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.step = '0.1';
+    input.value = '1';
+    input.placeholder = `c${numVars}`;
+    input.className = 'coef-c';
+    masVars.appendChild(document.createTextNode(' + '));
+    masVars.appendChild(input);
+    masVars.appendChild(document.createTextNode(`x${numVars}`));
+    // Actualizar restricciones existentes
+    actualizarRestriccionesParaVariables();
+}
+
+function actualizarRestriccionesParaVariables() {
+    const restricciones = document.querySelectorAll('.constraint-item');
+    restricciones.forEach((div) => {
+        const row = div.querySelector('.form-row');
+        // Elimina los inputs extra si hay menos variables
+        while (row.querySelectorAll('.coef-a').length > numVars) {
+            row.removeChild(row.querySelectorAll('.coef-a')[row.querySelectorAll('.coef-a').length-1].nextSibling); // elimina xN
+            row.removeChild(row.querySelectorAll('.coef-a')[row.querySelectorAll('.coef-a').length-1]);
+            if (row.querySelectorAll('.coef-a').length > 1) row.removeChild(row.querySelectorAll('.coef-a')[row.querySelectorAll('.coef-a').length-1].previousSibling); // elimina +
+        }
+        // Agrega inputs si faltan
+        let currentVars = row.querySelectorAll('.coef-a').length;
+        for (let i = currentVars + 1; i <= numVars; i++) {
+            row.insertBefore(document.createTextNode(' + '), row.querySelector('.restriccion-final'));
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.step = '0.1';
+            input.value = '1';
+            input.placeholder = `a${i}`;
+            input.className = 'coef-a';
+            input.setAttribute('data-var', i);
+            row.insertBefore(input, row.querySelector('.restriccion-final'));
+            row.insertBefore(document.createTextNode(`x${i}`), row.querySelector('.restriccion-final'));
+        }
+    });
+}
 
 function agregarRestriccion() {
     if (contadorRestricciones >= maxRestricciones) {
         alert(`Máximo ${maxRestricciones} restricciones permitidas`);
         return;
     }
-
     contadorRestricciones++;
     const container = document.getElementById('restricciones-container');
-    
     const restriccionDiv = document.createElement('div');
     restriccionDiv.className = 'constraint-item';
     restriccionDiv.id = `restriccion-${contadorRestricciones}`;
-    
-    restriccionDiv.innerHTML = `
-        <div class="form-row">
-            <input type="number" step="0.1" value="1" placeholder="a₁" class="coef-a1">
-            <span>x₁ +</span>
-            <input type="number" step="0.1" value="1" placeholder="a₂" class="coef-a2">
-            <span>x₂ ≤</span>
-            <input type="number" step="0.1" value="1" placeholder="b" class="coef-b">
-            <button class="btn btn-danger" onclick="eliminarRestriccion(${contadorRestricciones})">🗑️</button>
-        </div>
-    `;
-    
+    // Construye la fila de inputs para la restricción
+    let html = `<div class="form-row">`;
+    for (let i = 1; i <= numVars; i++) {
+        if (i > 1) html += ' + ';
+        html += `<input type="number" step="0.1" value="1" placeholder="a${i}" class="coef-a" data-var="${i}">x${i}`;
+    }
+    html += `<span class="restriccion-final"> ≤ </span>
+        <input type="number" step="0.1" value="1" placeholder="b" class="coef-b">
+        <button class="btn btn-danger" onclick="eliminarRestriccion(${contadorRestricciones})">🗑️</button>
+    </div>`;
+    restriccionDiv.innerHTML = html;
     container.appendChild(restriccionDiv);
     actualizarContador();
 }
@@ -40,7 +86,17 @@ function eliminarRestriccion(id) {
 
 function actualizarContador() {
     document.getElementById('contador-restricciones').textContent = 
-        `Restricciones: ${contadorRestricciones}/${maxRestricciones}`;
+        `Restricciones: ${contadorRestricciones || 0}/${maxRestricciones}`;
+}
+
+function obtenerCoeficientes() {
+    // Devuelve un array con todos los coeficientes de la función objetivo
+    const coefInputs = document.querySelectorAll('.coef-c');
+    const coeficientes = [];
+    coefInputs.forEach(input => {
+        coeficientes.push(parseFloat(input.value));
+    });
+    return coeficientes;
 }
 
 function obtenerRestricciones() {
@@ -48,14 +104,15 @@ function obtenerRestricciones() {
     const elementos = document.querySelectorAll('.constraint-item');
     
     elementos.forEach(elemento => {
-        const a1 = elemento.querySelector('.coef-a1').value;
-        const a2 = elemento.querySelector('.coef-a2').value;
+        const coefInputs = elemento.querySelectorAll('.coef-a');
+        const coefs = [];
+        coefInputs.forEach(input => {
+            coefs.push(parseFloat(input.value));
+        });
         const b = elemento.querySelector('.coef-b').value;
-        
-        if (a1 && a2 && b) {
+        if (coefs.every(v => !isNaN(v)) && b) {
             restricciones.push({
-                a1: parseFloat(a1),
-                a2: parseFloat(a2),
+                coefs: coefs,
                 b: parseFloat(b)
             });
         }
@@ -65,12 +122,11 @@ function obtenerRestricciones() {
 }
 
 async function resolverProblema() {
-    const c1 = document.getElementById('c1').value;
-    const c2 = document.getElementById('c2').value;
+    const c = obtenerCoeficientes();
     const tipo = document.getElementById('tipoOptimizacion').value;
     const restricciones = obtenerRestricciones();
 
-    if (!c1 || !c2) {
+    if (c.some(v => isNaN(v))) {
         mostrarError('Complete los coeficientes de la función objetivo');
         return;
     }
@@ -93,8 +149,7 @@ async function resolverProblema() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                c1: parseFloat(c1),
-                c2: parseFloat(c2),
+                c: c,
                 tipo: tipo,
                 restricciones: restricciones
             })

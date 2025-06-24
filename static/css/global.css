@@ -76,6 +76,9 @@ body {
     gap: 10px;
     align-items: center;
     margin-bottom: 10px;
+    overflow-x: auto;
+    flex-wrap: wrap;
+    max-width: 100%;
 }
 
 input[type="number"], select {
@@ -85,6 +88,14 @@ input[type="number"], select {
     font-size: 14px;
     transition: border-color 0.3s;
     width: 80px;
+}
+
+input[type="number"].coef-c, input[type="number"].coef-a {
+    width: 60px;
+    min-width: 50px;
+    max-width: 80px;
+    padding: 6px;
+    font-size: 13px;
 }
 
 input[type="number"]:focus, select:focus {
@@ -238,6 +249,13 @@ select {
     
     .form-row {
         flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    input[type="number"].coef-c, input[type="number"].coef-a {
+        width: 40px;
+        min-width: 35px;
+        font-size: 12px;
     }
 }
 

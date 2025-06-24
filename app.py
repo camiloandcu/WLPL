@@ -59,25 +59,21 @@ def tabulado():
     try:
         data = request.json
 
-        c1 = float(data['c1'])
-        c2 = float(data['c2'])
+        c = data['c']
         maximizar = data['tipo'] == 'maximizar'
-
         restricciones = data['restricciones']
 
         if(len(restricciones) > app.config['MAX_CONSTRAINTS']):
             return jsonify({'error': f'Máximo {app.config["MAX_CONSTRAINTS"]} restricciones permitidas'})
+        elif not restricciones:
+            return jsonify({'error': 'Debe ingresar al menos una restricción'})
 
-        c = [c1, c2]
         A = []
         b = []
 
         for rest in restricciones: 
-            A.append([float(rest['a1']), float(rest['a2'])])
-            b.append(float(rest['b']))
-
-        if not A: 
-            return jsonify({'error': 'Debe ingresar al menos una restricción'})
+            A.append(rest['coefs'])
+            b.append(rest['b'])
 
         # Resolver problema gráfico
         resultado = resolver_problema_tabulado(
