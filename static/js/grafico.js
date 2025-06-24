@@ -87,7 +87,7 @@ async function resolverProblema() {
 
     try {
         // Hace llamado al servidor para resolver el problema
-        const response = await fetch('/resolver', {
+        const response = await fetch('/resolver/grafico', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -101,6 +101,7 @@ async function resolverProblema() {
         });
 
         const data = await response.json();
+        console.log(data);
 
         if (data.error) {
             mostrarError(data.error);

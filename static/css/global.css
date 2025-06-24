@@ -240,3 +240,44 @@ select {
         flex-wrap: wrap;
     }
 }
+
+.simplex-table-container {
+    overflow-x: auto;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.simplex-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.simplex-table th, .simplex-table td {
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.simplex-table th {
+    background: #f0f4fa;
+    font-weight: bold;
+}
+
+.simplex-iter-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #4facfe;
+}
+
+.simplex-solucion {
+    background: #e6f9f2;
+    border-radius: 5px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    font-family: monospace;
+}

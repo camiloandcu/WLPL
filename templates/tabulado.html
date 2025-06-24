@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solver de Programación Lineal</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/page.css') }}">
-    <script src="{{ url_for('static', filename='js/page.js') }}"></script>
+    <title>Simplex Tabulado - Programación Lineal</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global.css') }}">
+    <script src="{{ url_for('static', filename='js/tabulado.js') }}"></script>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔢 Método Gráfico</h1>
-            <p>Solución de modelos de PL con 2 variables</p>
+            <h1>📋 Método Tabulado (Simplex)</h1>
+            <p>Solución paso a paso con el método simplex tabular</p>
+            <a href="/grafico" class="btn btn-primary" style="float:right;">Ir a Método Gráfico</a>
         </div>
 
         <div class="main-content">
@@ -56,23 +57,12 @@
                 </div>
 
                 <div id="resultados" style="display: none;">
-                    <div class="result-item">
-                        <h4>🎯 Solución Óptima (Método Gráfico)</h4>
-                        <p id="solucion-grafico">-</p>
-                    </div>
-
-                    <div class="result-item">
-                        <h4>✅ Verificación Analítica</h4>
-                        <p id="solucion-analitica">-</p>
-                    </div>
-
-                    <div class="result-item">
-                        <h4>📐 Vértices de la Región Factible</h4>
-                        <div id="vertices-lista" class="vertices-list">-</div>
-                    </div>
-
-                    <div class="graph-container">
-                        <img id="grafico" src="" alt="Gráfico de la solución" style="display: none;">
+                    <div class="simplex-table-container">
+                        <div class="result-item">
+                            <h4>✅ Pasos del Método Simplex Tabulado</h4>
+                            <div id="simplex-tabla-pasos"></div>
+                            <div id="simplex-solucion" class="simplex-solucion"></div>
+                        </div>
                     </div>
                 </div>
 

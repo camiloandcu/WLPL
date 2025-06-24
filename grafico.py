@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import linprog
 from itertools import combinations
@@ -263,3 +264,4 @@ def resolver_problema_grafico(c, A, b, maximizar=True, xlim=(0,10), ylim=(0,10),
     'punto_optimo': list(punto_optimo) if punto_optimo is not None else None,
     'valor_optimo': float(valor_optimo) if valor_optimo is not None else None
 }
+
