@@ -20,17 +20,17 @@
                 <h2 class="section-title">📝 Definición del Problema</h2>
                 
                 <div class="form-group">
-                    <label>Función Objetivo:</label>
+                    <label for="tipoOptimizacion">Función Objetivo:</label>
                     <div class="form-row" id="funcion-objetivo-row">
-                        <select id="tipoOptimizacion">
+                        <select id="tipoOptimizacion" name="tipoOptimizacion" title="Tipo de optimización">
                             <option value="maximizar">Maximizar</option>
                             <option value="minimizar">Minimizar</option>
                         </select>
                         <span>f(x) =</span>
-                        <input type="number" step="0.1" value="3" placeholder="c1" class="coef-c">
-                        <span>x₁</span>
-                        <input type="number" step="0.1" value="2" placeholder="c2" class="coef-c">
-                        <span>x₂</span>
+                        <input type="number" step="1" value="3" placeholder="c1" class="coef-c" id="c1">
+                        <span>x<sub>1</sub> +</span>
+                        <input type="number" step="1" value="2" placeholder="c2" class="coef-c" id="c2">
+                        <span>x<sub>2</sub></span>
                         <span id="mas-vars"></span>
                         <button type="button" class="btn btn-success" style="margin-left:10px;" onclick="agregarVariable()">➕ Variable</button>
                     </div>

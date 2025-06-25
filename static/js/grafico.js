@@ -16,11 +16,11 @@ function agregarRestriccion() {
     
     restriccionDiv.innerHTML = `
         <div class="form-row">
-            <input type="number" step="0.1" value="1" placeholder="a₁" class="coef-a1">
-            <span>x₁ +</span>
-            <input type="number" step="0.1" value="1" placeholder="a₂" class="coef-a2">
-            <span>x₂ ≤</span>
-            <input type="number" step="0.1" value="1" placeholder="b" class="coef-b">
+            <input type="number" step="1" value="1" placeholder="a₁" class="coef-a1">
+            <span>x<sub>1</sub> +</span>
+            <input type="number" step="1" value="1" placeholder="a₂" class="coef-a2">
+            <span>x<sub>2</sub> ≤</span>
+            <input type="number" step="1" value="1" placeholder="b" class="coef-b">
             <button class="btn btn-danger" onclick="eliminarRestriccion(${contadorRestricciones})">🗑️</button>
         </div>
     `;

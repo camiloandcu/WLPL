@@ -72,23 +72,71 @@ def resolver_problema_tabulado(c, A, b, maximizar=True):
             solucion[var] = table[i, -1]
     z = table[-1, -1]
 
-        # Análisis de sensibilidad: valores sombra (precios sombra)
+    # Análisis de sensibilidad: valores sombra (precios sombra)
+    # Análisis de sensibilidad: valores sombra (precios sombra)
     shadow_prices = -table[-1, n_vars:n_vars + n_constraints]
     analisis_sensibilidad = []
-    for i, price in enumerate(shadow_prices):
-        descripcion = f"Restricción {i+1}: valor sombra = {price:.4f}"
-        if price > 0:
-            efecto = f"Aumentar el lado derecho de la restricción {i+1} mejora Z en {price:.4f} unidades por unidad."
-        elif price < 0:
-            efecto = f"Aumentar el lado derecho de la restricción {i+1} reduce Z en {abs(price):.4f} unidades por unidad."
-        else:
-            efecto = f"El lado derecho de la restricción {i+1} no afecta el valor óptimo Z."
-        analisis_sensibilidad.append({
-            "restriccion": i+1,
-            "valor_sombra": float(price),
-            "descripcion": descripcion,
-            "efecto": efecto
-        })
+
+    try:
+        # Calcula la matriz de base inversa (B_inv)
+        # Para problemas estándar, la base son las columnas de las variables básicas (basic_vars)
+        base_indices = []
+        for var in basic_vars:
+            if var.startswith("s"):
+                idx = n_vars + int(var[1:]) - 1
+            else:
+                idx = int(var[1:]) - 1
+            base_indices.append(idx)
+        B = np.hstack([A[:, [i]] for i in range(n_constraints)])  # base de restricciones
+        B_inv = np.linalg.inv(B)
+        b_star = B_inv @ b
+
+        for i, price in enumerate(shadow_prices):
+            # Calcula los rangos de factibilidad para el LD (Lado Derecho) de la restricción i
+            min_LD = -np.inf
+            max_LD = np.inf
+            for j in range(n_constraints):
+                if B_inv[j, i] > 0:
+                    temp = b_star[j] / B_inv[j, i]
+                    if temp < max_LD:
+                        max_LD = temp
+                elif B_inv[j, i] < 0:
+                    temp = b_star[j] / B_inv[j, i]
+                    if temp > min_LD:
+                        min_LD = temp
+            descripcion = f"Restricción {i+1}: valor sombra = {price:.4f}"
+            if price > 0:
+                efecto = f"Aumentar el lado derecho de la restricción {i+1} mejora Z en {price:.4f} unidades por unidad."
+            elif price < 0:
+                efecto = f"Aumentar el lado derecho de la restricción {i+1} reduce Z en {abs(price):.4f} unidades por unidad."
+            else:
+                efecto = f"El lado derecho de la restricción {i+1} no afecta el valor óptimo Z."
+            analisis_sensibilidad.append({
+                "restriccion": i+1,
+                "valor_sombra": float(price),
+                "min": round(min_LD, 4) if min_LD != -np.inf else None,
+                "max": round(max_LD, 4) if max_LD != np.inf else None,
+                "descripcion": descripcion,
+                "efecto": efecto
+            })
+    except Exception as e:
+        # Si no se puede calcular, devuelve N/A
+        for i, price in enumerate(shadow_prices):
+            descripcion = f"Restricción {i+1}: valor sombra = {price:.4f}"
+            if price > 0:
+                efecto = f"Aumentar el lado derecho de la restricción {i+1} mejora Z en {price:.4f} unidades por unidad."
+            elif price < 0:
+                efecto = f"Aumentar el lado derecho de la restricción {i+1} reduce Z en {abs(price):.4f} unidades por unidad."
+            else:
+                efecto = f"El lado derecho de la restricción {i+1} no afecta el valor óptimo Z."
+            analisis_sensibilidad.append({
+                "restriccion": i+1,
+                "valor_sombra": float(price),
+                "min": None,
+                "max": None,
+                "descripcion": descripcion,
+                "efecto": efecto
+            })
 
     return {
         "pasos": pasos,

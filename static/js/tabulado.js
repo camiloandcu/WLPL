@@ -1,10 +1,11 @@
 let numVars = 2;
 let contadorRestricciones = 0;
 const maxRestricciones = 8;
+const maxVars = 5;
 
 function agregarVariable() {
-    if (numVars >= 5) {
-        alert("Máximo 5 variables permitidas");
+    if (numVars >= maxVars) {
+        alert(`Máximo ${maxVars} variables permitidas`);
         return;
     }
     numVars++;
@@ -12,13 +13,15 @@ function agregarVariable() {
     const masVars = document.getElementById('mas-vars');
     const input = document.createElement('input');
     input.type = 'number';
-    input.step = '0.1';
+    input.step = '1';
     input.value = '1';
     input.placeholder = `c${numVars}`;
     input.className = 'coef-c';
+    input.setAttribute('aria-label', `Coeficiente c${numVars} de la función objetivo`);
+    input.id = `c${numVars}`;
     masVars.appendChild(document.createTextNode(' + '));
     masVars.appendChild(input);
-    masVars.appendChild(document.createTextNode(`x${numVars}`));
+    masVars.appendChild(document.createElement('span')).innerHTML = `x<sub>${numVars}</sub>`;
     // Actualizar restricciones existentes
     actualizarRestriccionesParaVariables();
 }
@@ -39,13 +42,13 @@ function actualizarRestriccionesParaVariables() {
             row.insertBefore(document.createTextNode(' + '), row.querySelector('.restriccion-final'));
             const input = document.createElement('input');
             input.type = 'number';
-            input.step = '0.1';
+            input.step = '1';
             input.value = '1';
             input.placeholder = `a${i}`;
             input.className = 'coef-a';
             input.setAttribute('data-var', i);
             row.insertBefore(input, row.querySelector('.restriccion-final'));
-            row.insertBefore(document.createTextNode(`x${i}`), row.querySelector('.restriccion-final'));
+            row.insertBefore(document.createElement('span'), row.querySelector('.restriccion-final')).innerHTML = `x<sub>${i}</sub>`;
         }
     });
 }
@@ -64,10 +67,11 @@ function agregarRestriccion() {
     let html = `<div class="form-row">`;
     for (let i = 1; i <= numVars; i++) {
         if (i > 1) html += ' + ';
-        html += `<input type="number" step="0.1" value="1" placeholder="a${i}" class="coef-a" data-var="${i}">x${i}`;
+        html += `<input type="number" step="1" value="1" placeholder="a${i}" class="coef-a" data-var="${i}">`;
+        html += `<span>x<sub>${i}</sub></span>`;
     }
     html += `<span class="restriccion-final"> ≤ </span>
-        <input type="number" step="0.1" value="1" placeholder="b" class="coef-b">
+        <input type="number" step="1" value="1" placeholder="b" class="coef-b">
         <button class="btn btn-danger" onclick="eliminarRestriccion(${contadorRestricciones})">🗑️</button>
     </div>`;
     restriccionDiv.innerHTML = html;
@@ -207,7 +211,33 @@ function mostrarSimplexTabulado(verificacion) {
 
     // Análisis de sensibilidad
     if (verificacion.analisis_sensibilidad && verificacion.analisis_sensibilidad.length > 0) {
-        let html = `<div class="simplex-sensibilidad"><b>Análisis de sensibilidad (valores sombra):</b><ul>`;
+        let html = `<div class="simplex-sensibilidad">
+            <div style="overflow-x:auto;">
+            <table class="simplex-table" style="margin-bottom:16px;">
+                <thead>
+                    <tr>
+                        <th>Restricción</th>
+                        <th>Valor sombra</th>
+                        <th>Mínimo LD</th>
+                        <th>Máximo LD</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        verificacion.analisis_sensibilidad.forEach(item => {
+            html += `<tr>
+                <td>#${item.restriccion}</td>
+                <td>${parseFloat(item.valor_sombra).toFixed(4)}</td>
+                <td>${item.min !== undefined && item.min !== null ? item.min : 'N/A'}</td>
+                <td>${item.max !== undefined && item.max !== null ? item.max : 'N/A'}</td>
+            </tr>`;
+        });
+        html += `</tbody></table></div>
+            <b>Análisis de sensibilidad (valores sombra):</b>
+            <div style="margin: 10px 0 18px 0; font-size: 14px;">
+                El valor sombra indica cuánto varía el valor óptimo Z si se incrementa en una unidad el lado derecho de la restricción.<br><br> 
+                Los valores mínimo y máximo indican el rango en el que puedes mover el lado derecho sin cambiar la base óptima (si está disponible).
+            </div>
+            <ul>`;
         verificacion.analisis_sensibilidad.forEach(item => {
             html += `<li><b>${item.descripcion}</b><br><span style="color:#555;">${item.efecto}</span></li>`;
         });

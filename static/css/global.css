@@ -325,3 +325,13 @@ select {
 .simplex-sensibilidad b {
     color: #117864;
 }
+
+.simplex-sensibilidad .simplex-table {
+    background: #f9fff6;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.simplex-sensibilidad th, .simplex-sensibilidad td {
+    padding: 6px 10px;
+    text-align: center;
+}
