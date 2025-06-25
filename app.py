@@ -1,11 +1,14 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect
 from grafico import resolver_problema_grafico
 from tabulado import resolver_problema_tabulado
-import json 
 
 app = Flask(__name__)
 
 app.config['MAX_CONSTRAINTS'] = 8  
+
+@app.route('/')
+def index():
+    return redirect('/grafico')
 
 @app.route('/grafico')
 def grafico_index():
