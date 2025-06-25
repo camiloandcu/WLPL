@@ -55,7 +55,7 @@
 <!-- ABOUT THE PROJECT -->
 ## Acerca del Proyecto
 
-PL Visualizer es una aplicación web interactiva para la enseñanza y análisis de problemas de Programación Lineal (PL) con dos o más variables. Permite definir modelos, visualizar la región factible y la solución óptima mediante el método gráfico, y resolver problemas de mayor dimensión usando el método simplex tabulado paso a paso.
+Aplicación web interactiva para la enseñanza y análisis de problemas de Programación Lineal (PL) con dos o más variables. Permite definir modelos, visualizar la región factible y la solución óptima mediante el método gráfico, y resolver problemas de mayor dimensión usando el método simplex tabulado paso a paso.
 
 Características principales:
 
