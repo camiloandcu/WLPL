@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from itertools import combinations
 import base64
@@ -180,20 +182,20 @@ def resolver_problema_grafico(c, A, b, maximizar=True, xlim=(0,10), ylim=(0,10),
     factible &= A[i][0] * X + A[i][1] * Y <= b[i]
 
   # Sombrear región factible
-  ax.contourf(X, Y, factible.astype(int), levels=[0,1], colors=['white', 'lightblue'], alpha=0.5)
+  ax.contourf(X, Y, factible.astype(int), levels=[0.5, 1.5], colors=['#b3e6ff'], alpha=0.5)
 
   # Dibujar lineas de restricción
   for i, (coefs,b_i) in enumerate(zip(A,b)):
     if coefs[1] != 0:
       y_linea = (b_i - coefs[0] * x) / coefs[1]
       mascara = (y_linea >= ylim[0]) & (y_linea <= ylim[1])
-      ax.plot(x[mascara], y_linea[mascara], 'r--', linewidth=2,
+      ax.plot(x[mascara], y_linea[mascara], color='slategrey', linestyle='dashed', linewidth=2, alpha=0.7,
               label=f'Restricción {i+1}: {coefs[0]:.1f}x₁ + {coefs[1]:.1f}x₂ ≤ {b_i:.1f}')
 
     else:
       x_linea = b_i / coefs[0]
       if xlim[0] <= x_linea <= xlim[1]:
-        ax.axvline(x=x_linea, color='r', linewidth=2,
+        ax.axvline(x=x_linea, color='slategrey', linewidth=2, alpha=0.8,
                    label=f'Restricción {i+1}: {coefs[0]:.1f}x₁ ≤ {b_i:.1f}')
 
   # Encontrar y evaluar vértices para encontrar punto optimo
@@ -233,8 +235,18 @@ def resolver_problema_grafico(c, A, b, maximizar=True, xlim=(0,10), ylim=(0,10),
                 mascara = (y_obj >= ylim[0]) & (y_obj <= ylim[1])
                 if np.any(mascara):
                     label_iso = 'Líneas de isoutilidad' if i == 0 else None
-                    ax.plot(x[mascara], y_obj[mascara], 'g--', alpha=0.7, linewidth=1,
+                    ax.plot(x[mascara], y_obj[mascara], 'r--', linewidth=2,
                             label = label_iso)
+                    
+  # Ajustar límites automáticamente si hay vértices
+  if vertices:
+      xs, ys = zip(*vertices)
+      min_x, max_x = min(xs), max(xs)
+      min_y, max_y = min(ys), max(ys)
+      margen_x = max((max_x - min_x) * 0.1, 1)
+      margen_y = max((max_y - min_y) * 0.1, 1)
+      xlim = (max(0, min_x - margen_x), max_x + margen_x)
+      ylim = (max(0, min_y - margen_y), max_y + margen_y)
 
   # Configurar gráfico
   ax.set_xlim(xlim)

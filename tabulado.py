@@ -73,7 +73,6 @@ def resolver_problema_tabulado(c, A, b, maximizar=True):
     z = table[-1, -1]
 
     # Análisis de sensibilidad: valores sombra (precios sombra)
-    # Análisis de sensibilidad: valores sombra (precios sombra)
     shadow_prices = -table[-1, n_vars:n_vars + n_constraints]
     analisis_sensibilidad = []
 
