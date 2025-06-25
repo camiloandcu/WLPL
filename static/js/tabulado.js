@@ -181,8 +181,10 @@ function mostrarResultados(data) {
 function mostrarSimplexTabulado(verificacion) {
     const pasosDiv = document.getElementById('simplex-tabla-pasos');
     const solucionDiv = document.getElementById('simplex-solucion');
+    const sensibilidadDiv = document.getElementById('analisis-sensibilidad');
     pasosDiv.innerHTML = '';
     solucionDiv.innerHTML = '';
+    sensibilidadDiv.innerHTML = '';
 
     if (!verificacion || !verificacion.pasos) {
         pasosDiv.innerHTML = '<em>No se pudo calcular el método tabulado.</em>';
@@ -202,6 +204,16 @@ function mostrarSimplexTabulado(verificacion) {
     let z = verificacion.z !== undefined ? verificacion.z : '';
     let solStr = Object.entries(sol).map(([k, v]) => `${k} = ${parseFloat(v).toFixed(3)}`).join(', ');
     solucionDiv.innerHTML = `<b>Solución óptima:</b> ${solStr}<br><b>Valor óptimo:</b> Z = ${parseFloat(z).toFixed(3)}`;
+
+    // Análisis de sensibilidad
+    if (verificacion.analisis_sensibilidad && verificacion.analisis_sensibilidad.length > 0) {
+        let html = `<div class="simplex-sensibilidad"><b>Análisis de sensibilidad (valores sombra):</b><ul>`;
+        verificacion.analisis_sensibilidad.forEach(item => {
+            html += `<li><b>${item.descripcion}</b><br><span style="color:#555;">${item.efecto}</span></li>`;
+        });
+        html += `</ul></div>`;
+        sensibilidadDiv.innerHTML = html;
+    }
 }
 
 function tablaSimplexHTML(tabla) {

@@ -27,9 +27,9 @@ def resolver_problema_tabulado(c, A, b, maximizar=True):
 
     def snapshot(table, basic_vars, iteracion):
         cols = [f"x{i+1}" for i in range(n_vars)] + \
-               [f"s{i+1}" for i in range(n_constraints)] + ["Z", "RHS"]
+               [f"s{i+1}" for i in range(n_constraints)] + ["Z", "LD"]
         df = pd.DataFrame(table, columns=cols)
-        df.insert(0, "BV", basic_vars + ["Z"])
+        df.insert(0, "VB", basic_vars + ["Z"])
         pasos.append({
             "iteracion": iteracion,
             "tabla": df.to_dict(orient="split")
@@ -72,8 +72,27 @@ def resolver_problema_tabulado(c, A, b, maximizar=True):
             solucion[var] = table[i, -1]
     z = table[-1, -1]
 
+        # Análisis de sensibilidad: valores sombra (precios sombra)
+    shadow_prices = -table[-1, n_vars:n_vars + n_constraints]
+    analisis_sensibilidad = []
+    for i, price in enumerate(shadow_prices):
+        descripcion = f"Restricción {i+1}: valor sombra = {price:.4f}"
+        if price > 0:
+            efecto = f"Aumentar el lado derecho de la restricción {i+1} mejora Z en {price:.4f} unidades por unidad."
+        elif price < 0:
+            efecto = f"Aumentar el lado derecho de la restricción {i+1} reduce Z en {abs(price):.4f} unidades por unidad."
+        else:
+            efecto = f"El lado derecho de la restricción {i+1} no afecta el valor óptimo Z."
+        analisis_sensibilidad.append({
+            "restriccion": i+1,
+            "valor_sombra": float(price),
+            "descripcion": descripcion,
+            "efecto": efecto
+        })
+
     return {
         "pasos": pasos,
         "solucion": solucion,
-        "z": z
+        "z": z,
+        "analisis_sensibilidad": analisis_sensibilidad
     }
