@@ -1,7 +1,5 @@
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.optimize import linprog
 from itertools import combinations
 import base64
 import io
